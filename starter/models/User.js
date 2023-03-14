@@ -11,10 +11,10 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Please provide email"],
-    validate: {
-      validator: validator.isEmail,
-      message: "Please provide valid email",
-    },
+    // validate: {
+    //   validator: validator.isEmail,
+    //   message: "Please provide valid email",
+    // },
   },
   password: {
     type: String,
