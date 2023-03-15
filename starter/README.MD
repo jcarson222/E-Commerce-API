@@ -57,11 +57,11 @@
 
 #### Register Controller
 
-- [] create user
-- [] send response with entire user (only while testing)
-- [] check if email already in use (schema and controller)
-- [] ignore 'role'
-- [] alternative 'admin' setup
+- [x] create user
+- [x] send response with entire user (only while testing)
+- [x] check if email already in use (schema and controller)
+- [x] ignore 'role'
+- [x] alternative 'admin' setup (using the User.countDocuments({}) method) - I'm not using this in my setup.
 
 #### Handle Password
 
