@@ -22,7 +22,7 @@ const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
 app.use(morgan("tiny"));
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // IMPORT ROUTES
 const authRouter = require("./routes/authRoutes");
@@ -33,7 +33,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/v1", (req, res) => {
-  console.log(req.cookies); // <-- .cookies available from 'cookie-parser'
+  //console.log(req.cookies); // <-- .cookies available from 'cookie-parser'
+  console.log(req.signedCookies);
   res.send("<h1>Cookie check</h1>");
 });
 

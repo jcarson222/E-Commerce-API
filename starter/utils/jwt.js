@@ -22,6 +22,8 @@ const attachCookiesToResponse = ({ res, user }) => {
   res.cookie("token", token, {
     httpOnly: true,
     expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === "production", // only secure under production, not secure in developement
+    signed: true,
   });
   // 'cookie' is an Express function
 };
