@@ -20,7 +20,29 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send("login user");
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError("Provide email and password to log in");
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new UnauthenticatedError("User with provided email does not exist");
+  }
+
+  const correctPassword = await user.comparePassword(password);
+
+  if (!correctPassword) {
+    throw new UnauthenticatedError("Provide correct password");
+  }
+
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+
+  attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ tokenUser });
 };
 
 const logout = async (req, res) => {
