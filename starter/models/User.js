@@ -31,19 +31,22 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre("save", async () => {
+UserSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.methods.createJWT = () => {
-  return jwt.sign({ user: this._id }, process.jwt.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
-  });
-};
+// UserSchema.methods.createJWT = function () {
+//   const tokenUser = { name: this.name, userId: this._id, role: this.role };
 
-UserSchema.methods.comparePassword = async (candidatePassword) => {
-  const isMatch = await bcrypt.compare(this.password, candidatePassword);
+//   return jwt.sign(tokenUser, process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_LIFETIME,
+//   });
+// };
+// ^^^ MOVED TO UTILS FOLDER
+
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
 
