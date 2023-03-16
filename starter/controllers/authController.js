@@ -2,6 +2,7 @@ const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
 const { attachCookiesToResponse } = require("../utils");
+//////////////////REGISTER////////////////////////
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -18,6 +19,7 @@ const register = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({ user });
 };
+///////////////////LOGIN//////////////////////
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -44,9 +46,15 @@ const login = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ tokenUser });
 };
+//////////////////LOGOUT//////////////////////
 
 const logout = async (req, res) => {
-  res.send("logout user");
+  res.cookie("token", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now() + 5 * 1000),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "User logged out" }); // <-- Only for dev purposes
 };
 
 module.exports = { register, login, logout };
