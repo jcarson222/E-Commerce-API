@@ -1,5 +1,11 @@
 const { request } = require("express");
-const { BadRequestError, UnauthenticatedError } = require("../errors");
+const req = require("express/lib/request");
+const { forbidden } = require("joi");
+const {
+  BadRequestError,
+  UnauthenticatedError,
+  ForbiddenError,
+} = require("../errors");
 const { isTokenValid } = require("../utils");
 
 const authenticateUser = async (req, res, next) => {
@@ -18,4 +24,15 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateUser };
+const authorizePermissions = (...roles) => {
+  const checkRoles = (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new ForbiddenError("Permission denied");
+    }
+    next();
+  };
+
+  return checkRoles;
+};
+
+module.exports = { authenticateUser, authorizePermissions };

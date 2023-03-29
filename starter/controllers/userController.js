@@ -9,15 +9,14 @@ const getAllUsers = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-  const userGuy = await User.findOne({ _id: req.params.id }).select(
-    "-password"
-  );
+  console.log(req.params);
+  const user = await User.findOne({ _id: req.params.id }).select("-password");
 
-  if (!userGuy) {
+  if (!user) {
     throw new NotFoundError("User not found");
   }
 
-  res.status(StatusCodes.OK).json({ userGuy });
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const showCurrentUser = async (req, res) => {
