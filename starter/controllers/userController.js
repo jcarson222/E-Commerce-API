@@ -69,7 +69,7 @@ const updateUserPassword = async (req, res) => {
   user.password = newPassword;
 
   await user.save();
-  // ^^^ .save() is a mongoose method. Saves the document.
+  // ^^^ .save() is a mongoose method. Saves the document. .SAVE() DOES TRIGGER THE PRE SAVE HOOK(HASH PASSWORD)!!! IF YOU USE .SAVE() ANYWHERE ELSE ADD THIS CODE TO THE PRE-HOOK: if (!this.isModified('password')) return;
   // ^^^ PASSWORD REMAINS HASHED
 
   res.status(StatusCodes.OK).json("Password successfully updated!");
