@@ -34,5 +34,6 @@ const authorizePermissions = (...roles) => {
 
   return checkRoles;
 };
+// ^^^ we can use this callback function to adjust different required roles to different routes
 
 module.exports = { authenticateUser, authorizePermissions };

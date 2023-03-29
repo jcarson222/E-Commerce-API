@@ -1,6 +1,10 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, NotFoundError } = require("../errors");
+const {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+} = require("../errors");
 
 const getAllUsers = async (req, res) => {
   const users = await User.find({ role: "user" }).select("-password");
@@ -20,7 +24,7 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-  res.send("show current user");
+  res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const updateUser = async (req, res) => {
@@ -28,7 +32,29 @@ const updateUser = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
-  res.send("update user password");
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    throw new BadRequestError("Please provide both old and new passwords");
+  }
+
+  const userId = req.user.userId;
+
+  const user = await User.findOne({ _id: userId });
+
+  const correctPassword = await user.comparePassword(oldPassword);
+
+  if (!correctPassword) {
+    throw new UnauthenticatedError("Provide correct password");
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+  // ^^^ .save() is a mongoose method. Saves the document.
+  // ^^^ PASSWORD REMAINS HASHED
+
+  res.status(StatusCodes.OK).json("Password successfully updated!");
 };
 
 module.exports = {
