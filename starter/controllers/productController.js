@@ -5,12 +5,11 @@ const {
   NotFoundError,
   UnauthenticatedError,
 } = require("../errors");
-const { response } = require("express");
-const { findOneAndRemove } = require("../models/Product");
+const path = require("path");
 
 const getAllProducts = async (req, res) => {
   const products = await Product.find({});
-  res.status(StatusCodes.OK).json({ products });
+  res.status(StatusCodes.OK).json({ products, count: products.length });
 };
 
 const getSingleProduct = async (req, res) => {
@@ -19,6 +18,10 @@ const getSingleProduct = async (req, res) => {
   } = req;
 
   const singleProduct = await Product.findOne({ _id: id });
+
+  if (!singleProduct) {
+    throw new BadRequestError(`Product with id ${id} not found`);
+  }
 
   res.status(StatusCodes.OK).json({ singleProduct });
 };
@@ -71,7 +74,31 @@ const deleteProduct = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
-  res.send("uploadImage");
+  if (!req.files) {
+    throw new BadRequestError("No file uploaded");
+  }
+
+  const productImage = req.files.image;
+
+  if (!productImage.mimetype.startsWith("image")) {
+    throw new BadRequestError("No image uploaded");
+  }
+
+  const maxSize = 1024 * 1024;
+
+  if (productImage.size > maxSize) {
+    throw new BadRequestError("Image must be smaller than 1MB");
+  }
+
+  const imagePath = path.join(
+    __dirname,
+    "../public/uploads/" + `${productImage.name}`
+  );
+  console.log(imagePath);
+
+  await productImage.mv(imagePath);
+
+  res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
 };
 
 module.exports = {
