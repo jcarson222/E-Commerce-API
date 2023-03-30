@@ -7,27 +7,27 @@ const {
 } = require("../errors");
 
 const getAllProducts = async (req, res) => {
-  res.send("all good");
+  res.send("getAllProducts");
 };
 
 const getSingleProduct = async (req, res) => {
-  res.send("all good");
+  res.send("getSingleProduct");
 };
 
 const createProduct = async (req, res) => {
-  res.send("all good");
+  res.send("createProduct");
 };
 
 const updateProduct = async (req, res) => {
-  res.send("all good");
+  res.send("updateProduct");
 };
 
 const deleteProduct = async (req, res) => {
-  res.send("all good");
+  res.send("deleteProduct");
 };
 
 const uploadImage = async (req, res) => {
-  res.send("all good");
+  res.send("uploadImage");
 };
 
 module.exports = {
