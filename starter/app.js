@@ -11,18 +11,20 @@ const app = express();
 // CONNECTDB
 const connectDB = require("./db/connect");
 
-app.use(express.json());
-
 // MISC PACKAGES
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
 
 // MIDDLEWARE
 const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
 app.use(morgan("tiny"));
+app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
+app.use(express.static("./public"));
+app.use(fileUpload());
 
 // IMPORT ROUTES
 const authRouter = require("./routes/authRoutes");
