@@ -11,11 +11,21 @@ const {
 const { checkPermissions } = require("../utils");
 
 const getAllReviews = async (req, res) => {
-  res.send("get all reviews");
+  const reviews = await Review.find({});
+
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
 
 const getSingleReview = async (req, res) => {
-  res.send("get single reviews");
+  const reviewId = req.params.id;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    throw new NotFoundError(`Review with id: ${reviewId} does not exist`);
+  }
+
+  res.status(StatusCodes.OK).json({ review });
 };
 
 const createReview = async (req, res) => {
