@@ -9,6 +9,7 @@ const {
 } = require("../errors");
 
 const { checkPermissions } = require("../utils");
+const { response } = require("express");
 
 const getAllReviews = async (req, res) => {
   // GET ALL REVIEWS AND POPULATE THEM WITH NAME,COMPANY,PRICE
@@ -104,10 +105,27 @@ const deleteReview = async (req, res) => {
   res.status(StatusCodes.OK).json("Review removed successfully");
 };
 
+const singleProductReviews = async (req, res) => {
+  const { id: productId } = req.params;
+
+  const reviews = await Review.find({ product: productId });
+
+  let count = reviews.length;
+
+  if (count === 0) {
+    res
+      .status(StatusCodes.OK)
+      .json("Be the first to leave a review for this product!");
+  } else {
+    res.status(StatusCodes.OK).json({ reviews, count: count });
+  }
+};
+
 module.exports = {
   getAllReviews,
   getSingleReview,
   createReview,
   updateReview,
   deleteReview,
+  singleProductReviews,
 };
