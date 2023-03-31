@@ -1,11 +1,14 @@
 const Review = require("../models/Review");
+const Product = require("../models/Product");
+
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
   NotFoundError,
   UnauthenticatedError,
 } = require("../errors");
-const { default: mongoose } = require("mongoose");
+
+const {checkPermissions} = require('../utils')
 
 const getAllReviews = async (req, res) => {
   res.send("get all reviews");
@@ -16,7 +19,7 @@ const getSingleReview = async (req, res) => {
 };
 
 const createReview = async (req, res) => {
-  res.send("create review");
+  req.body.product = 
 };
 
 const updateReview = async (req, res) => {
