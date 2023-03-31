@@ -61,18 +61,17 @@ const updateProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-  const {
-    user: { userId },
-    params: { id },
-  } = req;
+  const { id: productId } = req.params;
 
-  const product = await Product.findOneAndRemove({ _id: id, user: userId });
+  const product = await Product.findOne({ _id: productId });
 
   if (!product) {
-    throw new BadRequestError("Product does not exist");
+    throw new NotFoundError(`No product with id : ${productId}`);
   }
 
-  res.status(StatusCodes.OK).send(`${product} has been removed`);
+  await product.deleteOne(); // <-- pre-hook from product schema
+
+  res.status(StatusCodes.OK).json({ msg: "Success! Product removed." });
 };
 
 const uploadImage = async (req, res) => {
