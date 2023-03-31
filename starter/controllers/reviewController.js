@@ -11,7 +11,11 @@ const {
 const { checkPermissions } = require("../utils");
 
 const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({});
+  // GET ALL REVIEWS AND POPULATE THEM WITH NAME,COMPANY,PRICE
+  const reviews = await Review.find({}).populate({
+    path: "product", // <-- because our review model has a product property that references 'Product'
+    select: "name company price",
+  });
 
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
