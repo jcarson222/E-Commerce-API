@@ -60,7 +60,28 @@ const createReview = async (req, res) => {
 };
 
 const updateReview = async (req, res) => {
-  res.send("update review");
+  const reviewId = req.params.id;
+
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    throw new NotFoundError(`Review with id: ${reviewId} does not exist`);
+  }
+
+  checkPermissions(req.user, review.user);
+
+  const { rating, title, comment } = req.body;
+
+  if (!rating || !title || !comment) {
+    throw new BadRequestError("Provide title, rating, and comments");
+  }
+
+  review.rating = rating;
+  review.title = title;
+  review.comment = comment;
+
+  await review.save();
+  res.status(StatusCodes.OK).json({ review });
 };
 
 const deleteReview = async (req, res) => {
