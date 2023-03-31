@@ -65,4 +65,13 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// removes all reviews associated with the product being removed
+ProductSchema.pre(
+  "deleteOne",
+  { document: true, query: false },
+  async function () {
+    await this.model("Review").deleteMany({ product: this._id });
+  }
+);
+
 module.exports = mongoose.model("Product", ProductSchema);
