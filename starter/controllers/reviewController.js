@@ -9,7 +9,6 @@ const {
 } = require("../errors");
 
 const { checkPermissions } = require("../utils");
-const { response } = require("express");
 
 const getAllReviews = async (req, res) => {
   // GET ALL REVIEWS AND POPULATE THEM WITH NAME,COMPANY,PRICE
@@ -65,21 +64,16 @@ const createReview = async (req, res) => {
 };
 
 const updateReview = async (req, res) => {
-  const reviewId = req.params.id;
+  const { id: reviewId } = req.params;
+  const { rating, title, comment } = req.body;
 
   const review = await Review.findOne({ _id: reviewId });
 
   if (!review) {
-    throw new NotFoundError(`Review with id: ${reviewId} does not exist`);
+    throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
   }
 
   checkPermissions(req.user, review.user);
-
-  const { rating, title, comment } = req.body;
-
-  if (!rating || !title || !comment) {
-    throw new BadRequestError("Provide title, rating, and comments");
-  }
 
   review.rating = rating;
   review.title = title;
