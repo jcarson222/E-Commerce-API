@@ -65,13 +65,6 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-ProductSchema.virtual("reviews", {
-  ref: "Review",
-  localField: "_id",
-  foreignField: "product",
-  justOne: false,
-});
-
 // removes all reviews associated with the product being removed
 ProductSchema.pre(
   "deleteOne",
